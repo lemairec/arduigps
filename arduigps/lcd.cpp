@@ -123,28 +123,34 @@ void LcdModule::readKeyAndUpdate(){
 }
 
 void LcdModule::printLcd(){
-  lcd.clear();
+  //lcd.clear();
   lcd.setCursor(0,0);
   if(m_line == LINE_NB_SAT){
-    lcd.print("nbSat ");
+    if(m_nbSat < 10){
+      lcd.print("nbSat  ");
+    } else {
+      lcd.print("nbSat ");
+    }
     lcd.print(m_nbSat);
     if(m_fix== 1){
-      lcd.print("    gps");
+      lcd.print("    gps ");
     } else if(m_fix== 2){
-      lcd.print("   Dgps");
+      lcd.print("   Dgps ");
     } else {
       lcd.print("  no gps");
     }
   } else if(m_line == LINE_LARGEUR){
     lcd.print("largeur ");
     lcd.print(m_largeur);
+    lcd.print("    ");
   } else if(m_line == LINE_VITESSE){
     lcd.print("vit ");
     lcd.print(m_vitesse);
-    lcd.print(" km/h ");
+    lcd.print(" km/h        ");
   } else if(m_line == LINE_TIME){
     lcd.print("time ");
     lcd.print(m_time);
+    lcd.print("    ");
   } else if(m_line == LINE_LAT_LONG){
     char s1[40];
     dtostrf(m_latitude, 4, 8, s1);
@@ -158,9 +164,10 @@ void LcdModule::printLcd(){
         lcd.print(s2[i]);
     }
   } else if(m_line == 10){
-    lcd.print("version 0.1");
+    lcd.print("version 0.1     ");
   }else {
     lcd.print(m_line);
+    lcd.print("                ");
   }
 
   /*m_distance += 0.20;
@@ -189,14 +196,14 @@ void LcdModule::drawDistanceAB(){
       lcd.print(" ");
     }
     lcd.print(-m_distance);
-    lcd.print(" m");
+    lcd.print(" m    ");
   } else {
     lcd.print("    ");
     if(m_distance<10.0){
       lcd.print(" ");
     }
     lcd.print(m_distance);
-    lcd.print(" m =>");
+    lcd.print(" m =>  ");
   }
   }
 }
