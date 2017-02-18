@@ -55,6 +55,7 @@ void GpsPoint::debug(){
     }
     m_data[10] = ',';
     print_serial_chars(m_data, 40);
+    Serial.print(m_time);
     Serial.print('\n');
 }
 
