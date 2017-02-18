@@ -190,19 +190,19 @@ void LcdModule::drawDistanceAB(){
   lcd.setCursor(0,1);
   if(m_distance == 0){
     lcd.print(" <=  0.00 m =>");
-  } else if(m_distance > 0){
+  } else if(m_distance < 0){
     lcd.print(" <= ");
-    if(m_distance<10.0){
-      lcd.print(" ");
-    }
-    lcd.print(m_distance);
-    lcd.print(" m    ");
-  } else {
-    lcd.print("    ");
     if(-m_distance<10.0){
       lcd.print(" ");
     }
     lcd.print(-m_distance);
+    lcd.print(" m    ");
+  } else {
+    lcd.print("    ");
+    if(m_distance<10.0){
+      lcd.print(" ");
+    }
+    lcd.print(m_distance);
     lcd.print(" m =>  ");
   }
   }
