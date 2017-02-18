@@ -33,8 +33,8 @@ public:
   GpsModule();
   void init();
 
-  bool readNextFrame();
-  bool readChar(char c);
+  void readNextFrame();
+  void readChar(char c);
   
   void setXY(GpsPoint & gpsPoint);
 

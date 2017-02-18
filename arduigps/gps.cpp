@@ -73,27 +73,24 @@ void GpsModule::init(){
   sendUBX(set_2HZ, sizeof(set_5HZ));
 }
 
-bool GpsModule::readNextFrame(){
+void GpsModule::readNextFrame(){
     while ( GPS_SERIAL.available()){
         char c = GPS_SERIAL.read();
         LOG_GPS_FRAME(c);
         this->readChar(c);
     }
-    return false;
 }
 
-bool GpsModule::readChar(char c){
+void GpsModule::readChar(char c){
   if(c == '$'){
     //INFO("readChar");
     resetBuffer();
   } else if(c == '\n'){
     parseBuffer();
-    return true;
   } else {
     this->m_buffer[m_bufferIndLast] = c;
     m_bufferIndLast++;
   }
-  return false;
 }
 
   
