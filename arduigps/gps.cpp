@@ -16,6 +16,19 @@
 //#define GPS_DEBUG
 
 
+byte set_10HZ[] = {0xB5, 0x62, 0x06, 0x08, 0x06, 0x00, 0x64, 0x00, 0x01, 0x00, 0x01, 0x00, 0x7A, 0x12}; //10HZ
+byte set_5HZ[] = {0xB5, 0x62, 0x06, 0x08, 0x06, 0x00, 0xc8, 0x00, 0x01, 0x00, 0x01, 0x00, 0xDE, 0x6A}; //5HZ
+byte set_2HZ[] = {0xB5, 0x62, 0x06, 0x08, 0x06, 0x00, 0xf4, 0x01, 0x01, 0x00, 0x01, 0x00, 0x0B, 0x77}; //2HZ
+
+void sendUBX(byte *UBXmsg, byte msgLength) {
+  for(int i = 0; i < msgLength; i++) {
+    GPS_SERIAL.write(UBXmsg[i]);
+    GPS_SERIAL.flush();
+  }
+  GPS_SERIAL.println();
+  GPS_SERIAL.flush();
+}
+
 void GpsPoint::reset(){
     m_latitude = 0;
     m_longitude = 0;
@@ -57,6 +70,7 @@ void GpsModule::init(){
   INFO("init Gps SERIAL_GPS");
 #endif  
   GPS_SERIAL.begin(GPS_BAUDRATE);
+  sendUBX(set_2HZ, sizeof(set_5HZ));
 }
 
 bool GpsModule::readNextFrame(){
@@ -120,17 +134,17 @@ void GpsModule::parseBuffer(){
   #ifdef GPS_DEBUG
     printBuffer();
   #endif
-  if(isEqual("GPGGA,", 6)){
-    return parseGGA();
-  } 
-  if(isEqual("GNGGA,", 6)){
-    return parseGGA();
-  } 
+  if(m_buffer[0] == 'G'){
+    if(m_buffer[1] == 'N' || m_buffer[1] == 'P'){
+      if(m_buffer[2] == 'G' && m_buffer[3] == 'G' && m_buffer[4] == 'A'){
+        return parseGGA();
+      }
+    }
+  }
 }
 
 
 void GpsModule::parseGGA(){
-  INFO("parseGGA");
   readUntilCommat();
   m_lastGGAEvent.m_time = readDouble();
   m_lastGGAEvent.m_latitude = readDeg();

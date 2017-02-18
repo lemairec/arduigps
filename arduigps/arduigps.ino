@@ -15,6 +15,7 @@ void callbackGpsGpGGA(GGAFrame & ggaFrame){
   lcdModule.updateDistance(gpsFramework.m_distance);
   lcdModule.updateTime(ggaFrame.m_time);
   lcdModule.updateVitesse(gpsFramework.m_vitesse);
+  lcdModule.readKeyAndUpdate();
   //INFO("fix " << fixggaFrame.m_fix<< " nbst " << ggaFrame.m_nbrSat << " prec " << ggaFrame.m_precision);
   
 }
