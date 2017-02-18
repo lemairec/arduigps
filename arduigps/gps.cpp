@@ -327,8 +327,16 @@ static double lambert_ys[6]= {5657616.674, 6199695.768, 6791905.085, 7239161.542
 #define E_CLARK_IGN 0.08248325676
 #define LON_MERID_GREENWICH 0.04079234433
 
+#define LAMBERT_I 0
+#define LAMBERT_II 1
+#define LAMBERT_III 2
+#define LAMBERT_IV 3
+#define LAMBERT_II_E 4
+#define LAMBERT_93 5
+#define LAMBERT LAMBERT_93
+
 void GpsModule::setXY(GpsPoint & gpsPoint){
-  __YGCoordinatesTransform(gpsPoint, E_CLARK_IGN, lambert_n[0], lambert_c[0], LON_MERID_GREENWICH, lambert_xs[0], lambert_ys[0]);
+  __YGCoordinatesTransform(gpsPoint, E_CLARK_IGN, lambert_n[LAMBERT], lambert_c[LAMBERT], LON_MERID_GREENWICH, lambert_xs[LAMBERT], lambert_ys[LAMBERT]);
 }
 
 /*
