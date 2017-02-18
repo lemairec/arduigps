@@ -11,6 +11,9 @@ void GpsFramework::savePointA(GpsPoint & gpsPoint){
   m_pointA = gpsPoint;
   changeStatusTrajectoire(PointA);
   print_message("savePointA");
+#ifdef JUST_LOG_GPS_FRAME
+  Serial.println("\n$SPA");
+#endif
 }
 void GpsFramework::savePointB(GpsPoint & gpsPoint){
   if(m_status == PointA){
@@ -21,6 +24,9 @@ void GpsFramework::savePointB(GpsPoint & gpsPoint){
   } else {
     print_message("error saveA first");
   }
+#ifdef JUST_LOG_GPS_FRAME
+  Serial.println("\n$SPB");
+#endif
 }
 
 void GpsFramework::onNewPoint(GpsPoint & gpsPoint){
