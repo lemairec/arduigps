@@ -331,7 +331,7 @@ static double lambert_ys[6]= {5657616.674, 6199695.768, 6791905.085, 7239161.542
 #define LAMBERT_IV 3
 #define LAMBERT_II_E 4
 #define LAMBERT_93 5
-#define LAMBERT LAMBERT_93
+#define LAMBERT LAMBERT_I
 
 void GpsModule::setXY(GpsPoint & gpsPoint){
   __YGCoordinatesTransform(gpsPoint, E_CLARK_IGN, lambert_n[LAMBERT], lambert_c[LAMBERT], LON_MERID_GREENWICH, lambert_xs[LAMBERT], lambert_ys[LAMBERT]);
