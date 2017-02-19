@@ -5,6 +5,7 @@
 //#define ENABLE_TEST
 
 //#define JUST_LOG_GPS_FRAME
+//#define INVERSE_LEFT_RIGHT
 
 
 #define ULTRA_LCD

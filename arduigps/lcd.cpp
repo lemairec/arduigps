@@ -187,24 +187,41 @@ void LcdModule::drawDistanceAB(){
     lcd.print(m_distance);
     lcd.print(" m ");
   } else {
-  lcd.setCursor(0,1);
-  if(m_distance == 0){
-    lcd.print(" <=  0.00 m =>");
-  } else if(m_distance < 0){
-    lcd.print(" <= ");
-    if(-m_distance<10.0){
-      lcd.print(" ");
+    lcd.setCursor(0,1);
+    if(m_distance == 0){
+      lcd.print(" <=  0.00 m =>");
+    } else if(m_distance < 0){
+#ifdef INVERSE_LEFT_RIGHT
+      lcd.print(" <= ");
+#else
+      lcd.print("    ");
+#endif
+      if(-m_distance<10.0){
+        lcd.print(" ");
+      }
+      lcd.print(-m_distance);
+#ifdef INVERSE_LEFT_RIGHT
+      lcd.print(" m    ");
+#else
+      lcd.print(" m => ");
+#endif
+
+    } else {
+#ifdef INVERSE_LEFT_RIGHT
+      lcd.print("    ");
+#else
+      lcd.print(" <= ");
+#endif
+      if(m_distance<10.0){
+        lcd.print(" ");
+      }
+      lcd.print(m_distance);
+#ifdef INVERSE_LEFT_RIGHT
+      lcd.print(" m => ");
+#else
+      lcd.print(" m    ");
+#endif
     }
-    lcd.print(-m_distance);
-    lcd.print(" m    ");
-  } else {
-    lcd.print("    ");
-    if(m_distance<10.0){
-      lcd.print(" ");
-    }
-    lcd.print(m_distance);
-    lcd.print(" m =>  ");
-  }
   }
 }
 
