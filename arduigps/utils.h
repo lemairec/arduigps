@@ -81,4 +81,12 @@ void print_serial_chars(char * data, size_t l){
   }
 }
 
+
+void print_double(double d){
+  char s[40];
+  dtostrf(d, 10, 20, s);
+  Serial.print(s);
+    
+}
+
 #endif //MOTOR_DIRECTION_H

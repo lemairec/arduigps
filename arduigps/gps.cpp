@@ -316,11 +316,6 @@ void __YGCoordinatesTransform(GpsPoint & gpsPoint, double e, double n, double c,
   double latiso = __YGLatitudeISO(lat,e);
   gpsPoint.m_x = x_s + c*exp(-n*latiso)*sin(n*(lon-lambda_c));
   gpsPoint.m_y = y_s - c*exp(-n*latiso)*cos(n*(lon-lambda_c));
-  Serial.print("*************");
-  print_double(gpsPoint.m_latitude);
-  Serial.print("*******e******");
-  print_double(gpsPoint.m_longitude);
-  Serial.println();
 }
 
 static double lambert_n[6] = {0.7604059656, 0.7289686274, 0.6959127966, 0.6712679322, 0.7289686274, 0.7256077650};

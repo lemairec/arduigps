@@ -70,9 +70,10 @@ void GpsFramework::calculDistanceAB(GpsPoint & gpsPoint){
   if(m_sqrt_m_a_m_b==0){
     m_distance = 0.0;
   } else {    
+    m_distance =  (m_a * gpsPoint.m_x + m_b * gpsPoint.m_y + m_c)/m_sqrt_m_a_m_b;
     //INFO("ym "<< gpsPoint.m_y << " xm " << gpsPoint.m_x << " " << gpsPoint.m_y - m_a * gpsPoint.m_x - m_b);
     //INFO("m_a " << m_a << " m_b " << m_b << " " << m_sqrt_m_a_m_b);
-    m_distance =  (m_a * gpsPoint.m_x + m_b * gpsPoint.m_y + m_c)/m_sqrt_m_a_m_b;
+    //INFO(m_distance);
     if(!m_sens){
       m_distance = -m_distance;
     }
