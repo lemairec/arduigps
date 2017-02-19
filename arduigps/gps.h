@@ -36,10 +36,11 @@ public:
   void readNextFrame();
   void readChar(char c);
   
-  void setXY(GpsPoint & gpsPoint);
-
+  
   GGAFrame m_lastGGAEvent;
 
+  void setReferencePoint(GpsPoint & gpsPoint);
+  void setXY(GpsPoint & gpsPoint);
 private:
   int m_bufferIndLast = 0;
   char m_buffer[200];

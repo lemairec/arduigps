@@ -9,6 +9,8 @@ GpsFramework::GpsFramework(){
 
 void GpsFramework::savePointA(GpsPoint & gpsPoint){
   m_pointA = gpsPoint;
+  m_gpsModule.setReferencePoint(m_pointA);
+  m_gpsModule.setXY(m_pointA);
   changeStatusTrajectoire(PointA);
   print_message("savePointA");
 #ifdef JUST_LOG_GPS_FRAME

@@ -316,6 +316,11 @@ void __YGCoordinatesTransform(GpsPoint & gpsPoint, double e, double n, double c,
   double latiso = __YGLatitudeISO(lat,e);
   gpsPoint.m_x = x_s + c*exp(-n*latiso)*sin(n*(lon-lambda_c));
   gpsPoint.m_y = y_s - c*exp(-n*latiso)*cos(n*(lon-lambda_c));
+  Serial.print("*************");
+  print_double(gpsPoint.m_latitude);
+  Serial.print("*******e******");
+  print_double(gpsPoint.m_longitude);
+  Serial.println();
 }
 
 static double lambert_n[6] = {0.7604059656, 0.7289686274, 0.6959127966, 0.6712679322, 0.7289686274, 0.7256077650};
@@ -333,8 +338,33 @@ static double lambert_ys[6]= {5657616.674, 6199695.768, 6791905.085, 7239161.542
 #define LAMBERT_93 5
 #define LAMBERT LAMBERT_I
 
+/**
+ * Cordonnees spheriques
+ * https://en.wikipedia.org/wiki/Equirectangular_projection
+  */
+
+#define EARTH_RADIUS 6378137
+
+double lat_0 = 49.045;
+double lon_0 = 3.4007;
+double temp_x = EARTH_RADIUS * cos(DEG2RAD(lon_0));
+
+void __SetXYSpherique(GpsPoint & gpsPoint){
+    double lon = DEG2RAD(gpsPoint.m_longitude - lon_0);
+    double lat = DEG2RAD(gpsPoint.m_latitude - lat_0);
+    gpsPoint.m_x = EARTH_RADIUS * cos(DEG2RAD(lat_0)) * lon;
+    gpsPoint.m_y = EARTH_RADIUS * lat;
+}
+
+void GpsModule::setReferencePoint(GpsPoint & gpsPoint){
+  //lat_0 = gpsPoint.m_latitude;
+  //lon_0 = gpsPoint.m_longitude;
+  //temp_x = EARTH_RADIUS * cos(DEG2RAD(lon_0));
+}
+
 void GpsModule::setXY(GpsPoint & gpsPoint){
-  __YGCoordinatesTransform(gpsPoint, E_CLARK_IGN, lambert_n[LAMBERT], lambert_c[LAMBERT], LON_MERID_GREENWICH, lambert_xs[LAMBERT], lambert_ys[LAMBERT]);
+  __SetXYSpherique(gpsPoint);
+  //__YGCoordinatesTransform(gpsPoint, E_CLARK_IGN, lambert_n[LAMBERT], lambert_c[LAMBERT], LON_MERID_GREENWICH, lambert_xs[LAMBERT], lambert_ys[LAMBERT]);
 }
 
 /*
