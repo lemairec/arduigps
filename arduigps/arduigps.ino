@@ -3,7 +3,7 @@
 #include "lcd.h"
 #include "framework.h"
 
-GpsModule gpsModule;
+
 GpsFramework gpsFramework;
 LcdModule lcdModule;
 
@@ -30,10 +30,10 @@ void print_message(char *c){
 
 
 void savePointA(){
-  gpsFramework.savePointA(gpsModule.m_lastGGAEvent);
+  gpsFramework.savePointA(gpsFramework.m_gpsModule.m_lastGGAEvent);
 }
 void savePointB(){
-  gpsFramework.savePointB(gpsModule.m_lastGGAEvent);
+  gpsFramework.savePointB(gpsFramework.m_gpsModule.m_lastGGAEvent);
 }
 
 void largueurDecrease(){
@@ -54,14 +54,14 @@ void setup(){
   test_trajectoire();
 #endif
   lcdModule.printEvent("begin");
-  gpsModule.init();
+  gpsFramework.m_gpsModule.init();
 
   
 }
 
 void loop(){
   //INFO(freeRam());
-  gpsModule.readNextFrame();
+  gpsFramework.m_gpsModule.readNextFrame();
   lcdModule.readKeyAndUpdate();
 }
 

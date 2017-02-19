@@ -9,6 +9,8 @@ class GpsFramework{
 public:
   GpsFramework();
 
+  GpsModule m_gpsModule;
+
   void onNewPoint(GpsPoint & gpsPoint);
   
   void savePointA(GpsPoint & gpsPoint);
