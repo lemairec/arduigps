@@ -42,7 +42,7 @@ private:
   double m_deplacementX;
   double m_deplacementY;
   double m_deplacementAngle;
-  bool m_sensAB = true;
+  bool m_sens = true;
   void calculVitesseDeplacement(GpsPoint & gpsPoint);
 
   //distance

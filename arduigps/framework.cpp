@@ -47,8 +47,8 @@ void GpsFramework::calculVitesseDeplacement(GpsPoint & gpsPoint){
   m_deplacementY = m_lastPointVitesseDeplacement.m_y - gpsPoint.m_y;
 
   if(m_ab_x != 0 || m_ab_y != 0){
-    double det = m_ab_x*m_deplacementY + m_ab_y*m_deplacementX;
-    m_sensAB = (det < 0);
+    double det = m_a*m_deplacementY - m_b*m_deplacementX;
+    m_sens = (det < 0);
   }
   
   double distance = sqrt(m_deplacementX*m_deplacementX + m_deplacementY*m_deplacementY)/1000.0;;
@@ -73,7 +73,7 @@ void GpsFramework::calculDistanceAB(GpsPoint & gpsPoint){
     //INFO("ym "<< gpsPoint.m_y << " xm " << gpsPoint.m_x << " " << gpsPoint.m_y - m_a * gpsPoint.m_x - m_b);
     //INFO("m_a " << m_a << " m_b " << m_b << " " << m_sqrt_m_a_m_b);
     m_distance =  (m_a * gpsPoint.m_x + m_b * gpsPoint.m_y + m_c)/m_sqrt_m_a_m_b;
-    if(!m_sensAB){
+    if(!m_sens){
       m_distance = -m_distance;
     }
     m_distance = fmod(m_distance, m_largeur);
