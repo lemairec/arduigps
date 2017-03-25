@@ -1,7 +1,7 @@
 l = 110;
 lg = 60;
 h = 22;
-e = 2;
+e = 3;
 $fn = 20;
 
 arduino_mega_e = 1;
@@ -71,6 +71,11 @@ y_arduino = -arduino_mega_lg/2;
 gps_x =  gps_lg/2 +27;
 gps_y =  0;
 
+module attach(h=14, l=17){
+    translate([l,-l,0])cube([e,l,h]);
+    translate([0,-l,0])cube([l,e,h]);
+}
+
 module boite(){
     union(){
         difference(){
@@ -80,6 +85,10 @@ module boite(){
                     translate([0,(lg/2+3)]) cylinder(h+e, r = 2+e);
                     translate([0,-(lg/2+3)]) cylinder(h+e, r = 2+e);
                 }
+                translate([-l/2-e,-lg/2-e,0])attach();
+                mirror([1,0,0])translate([-l/2-e,-lg/2-e,0])attach();
+                mirror([0,1,0])translate([-l/2-e,-lg/2-e,0])attach();
+                mirror([1,0,0])mirror([0,1,0])translate([-l/2-e,-lg/2-e,0])attach();
             }
             translate([-l/2,-lg/2,e]) cube([l, lg, h+e]);
             for(i=[0:3]){
@@ -140,7 +149,7 @@ module boite_up(){
     }
 }
 
-i = 0;
+i = 1;
 if(i==0){
     boite();
     translate([0,0,h+e+1])rotate([0,180,0])boite_up();
