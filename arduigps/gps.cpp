@@ -15,6 +15,26 @@
 
 //#define GPS_DEBUG
 
+AngleGps::AngleGps()
+:m_part0(0), m_part1(0){
+};
+  AngleGps::AngleGps(int part0, int part1)
+  :m_part0(part0), m_part1(part1){
+    
+  }
+
+double AngleGps::toDouble(){
+  int h = m_part0/100;
+  double minu = (m_part0-(h*100));
+  return h + (minu + m_part1*0.00001)/60.0;
+}
+
+AngleGps AngleGps::operator - (const AngleGps &a){
+  AngleGps temp = *this;
+  temp.m_part0 = m_part0 - a.m_part0;
+  temp.m_part1 = m_part1 - a.m_part1;
+  return temp;
+}
 
 byte set_10HZ[] = {0xB5, 0x62, 0x06, 0x08, 0x06, 0x00, 0x64, 0x00, 0x01, 0x00, 0x01, 0x00, 0x7A, 0x12}; //10HZ
 byte set_5HZ[] = {0xB5, 0x62, 0x06, 0x08, 0x06, 0x00, 0xc8, 0x00, 0x01, 0x00, 0x01, 0x00, 0xDE, 0x6A}; //5HZ
@@ -30,14 +50,14 @@ void sendUBX(byte *UBXmsg, byte msgLength) {
 }
 
 void GpsPoint::reset(){
-    m_latitude = 0;
-    m_longitude = 0;
+    m_latitude = AngleGps();
+    m_longitude = AngleGps();
     m_x = 0;
     m_y = 0;
 }
 
 bool GpsPoint::isValid(){
-    return m_latitude > 0.1;
+    //return m_latitude > 0.1;
 }
 
 void GpsPoint::debug(){
@@ -45,14 +65,14 @@ void GpsPoint::debug(){
     for(size_t i = 0; i < 40; ++i){
       m_data[i] = ' ';
     }
-    char s1[40];
+    /*char s1[40];
     dtostrf(m_latitude, 4, 8, s1);
     char s2[40];
     dtostrf(m_longitude, 4, 8, s2);
     for(size_t i = 0; i < 11; ++i){
         m_data[i] = s1[i];
         m_data[i + 12] = s2[i];
-    }
+    }*/
     m_data[10] = ',';
     print_serial_chars(m_data, 40);
     Serial.print(m_time);
@@ -145,9 +165,9 @@ void GpsModule::parseBuffer(){
 void GpsModule::parseGGA(){
   readUntilCommat();
   m_lastGGAEvent.m_time = readDouble();
-  m_lastGGAEvent.m_latitude = readDeg();
+  readAngle(m_lastGGAEvent.m_latitude);
   readUntilCommat();
-  m_lastGGAEvent.m_longitude = readDeg();
+  readAngle(m_lastGGAEvent.m_longitude);
   readUntilCommat();
   m_lastGGAEvent.m_fix = readInt();
   m_lastGGAEvent.m_nbrSat = readInt();
@@ -164,11 +184,11 @@ void GpsModule::parseRMC(){
   readUntilCommat();
   readUntilCommat();
   //debug();
-  double lastLatitude = readDeg();
+  //readAngle(lastLatitude);
   readUntilCommat();
   //debug();
 
-  double lastLongitude = readDeg();
+  //readAngle(lastLongitude);
   //m_lastFix = getOneInt();
 }
 
@@ -273,12 +293,37 @@ double GpsModule::readDouble(){
 }
 
   
-double GpsModule::readDeg()
+void GpsModule::readAngle(AngleGps & angle)
 {
-    double d = readDouble();
-    int h = d/100;
-    double minu = (d-(h*100));
-    return h + minu/60.0;
+  bool virgule = false;
+  int virgule_part = 1;
+  long res0 = 0;
+  long res1 = 0;
+  while(m_tempInd < m_bufferIndLast){
+    char c = m_buffer[m_tempInd];
+    int number = 0;
+    if(c == ','){
+      ++m_tempInd;
+      for(int i = virgule_part; i < 6; ++i){
+        res1 = res1*10;
+      }
+      angle.m_part0 = res0;
+      angle.m_part1 = res1;
+      return;
+    } else if(c =='.'){
+      virgule = true;
+    } else {
+      number = getIntWithChar(c);
+    }
+
+    if(!virgule){
+      res0 = res0 * 10 + number;
+    } else {
+      res1 = res1 * 10 + number;
+      ++virgule_part;
+    }
+    ++m_tempInd;
+  }
 }
 
 double GpsModule::getTimeHour(double d)
@@ -311,8 +356,8 @@ double __YGLatitudeISO(double lat, double e)
 
 void __YGCoordinatesTransform(GpsPoint & gpsPoint, double e, double n, double c, double lambda_c, double x_s, double y_s)
 {
-  double lon = DEG2RAD(gpsPoint.m_longitude);
-  double lat = DEG2RAD(gpsPoint.m_latitude);
+  double lon = DEG2RAD(gpsPoint.m_longitude.toDouble());
+  double lat = DEG2RAD(gpsPoint.m_latitude.toDouble());
   double latiso = __YGLatitudeISO(lat,e);
   gpsPoint.m_x = x_s + c*exp(-n*latiso)*sin(n*(lon-lambda_c));
   gpsPoint.m_y = y_s - c*exp(-n*latiso)*cos(n*(lon-lambda_c));
@@ -340,21 +385,21 @@ static double lambert_ys[6]= {5657616.674, 6199695.768, 6791905.085, 7239161.542
 
 #define EARTH_RADIUS 6378137
 
-double lat_0 = 49.045;
-double lon_0 = 3.4007;
-double temp_x = EARTH_RADIUS * cos(DEG2RAD(lon_0));
+AngleGps lat_0(4902,716100);
+AngleGps lon_0(00324,41580);
+double temp_x = EARTH_RADIUS * cos(-lat_0.toRadians());
 
 void __SetXYSpherique(GpsPoint & gpsPoint){
-    double lon = DEG2RAD(gpsPoint.m_longitude - lon_0);
-    double lat = DEG2RAD(gpsPoint.m_latitude - lat_0);
-    gpsPoint.m_x = EARTH_RADIUS * cos(DEG2RAD(lat_0)) * lon;
+    double lon = (gpsPoint.m_longitude - lon_0).toRadians();
+    double lat = (gpsPoint.m_latitude - lat_0).toRadians();
+    gpsPoint.m_x = temp_x * lon;
     gpsPoint.m_y = EARTH_RADIUS * lat;
 }
 
 void GpsModule::setReferencePoint(GpsPoint & gpsPoint){
-  //lat_0 = gpsPoint.m_latitude;
-  //lon_0 = gpsPoint.m_longitude;
-  //temp_x = EARTH_RADIUS * cos(DEG2RAD(lon_0));
+  lat_0 = gpsPoint.m_latitude;
+  lon_0 = gpsPoint.m_longitude;
+  temp_x = EARTH_RADIUS * cos(-lat_0.toRadians());
 }
 
 void GpsModule::setXY(GpsPoint & gpsPoint){

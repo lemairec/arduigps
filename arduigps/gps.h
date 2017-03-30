@@ -1,12 +1,27 @@
 #ifndef GPS_H
 #define GPS_H
 #include "logging.h"
+#include "angle.h"
+
+class AngleGps{
+public:
+  char m_s[10];
+  long m_part0;
+  long m_part1;
+
+  AngleGps();
+  AngleGps(int part0, int part1);
+
+  AngleGps operator - (const AngleGps&);
+  double toDouble();
+  double toRadians() { return toDouble() * PI / 180.0; };  
+};
 
 struct GpsPoint {
   double m_altitude;
     
-  double m_latitude = 0.0;
-  double m_longitude = 0.0;
+  AngleGps m_latitude;
+  AngleGps m_longitude;
     
   double m_x = 0.0;
   double m_y = 0.0;
@@ -61,7 +76,7 @@ private:
   int getIntWithChar(char c);
   int readInt();
   double readDouble();
-  double readDeg();
+  void readAngle(AngleGps & angle);
 
   double getTimeHour(double d);
 };

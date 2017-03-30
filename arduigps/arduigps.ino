@@ -11,7 +11,7 @@ void callbackGpsGpGGA(GGAFrame & ggaFrame){
   //gpsEvent.debug();
   gpsFramework.onNewPoint(ggaFrame);
   lcdModule.updateSat(ggaFrame.m_fix, ggaFrame.m_nbrSat, ggaFrame.m_precision);
-  lcdModule.updateLatLon(ggaFrame.m_latitude, ggaFrame.m_longitude);
+  lcdModule.updateLatLon(ggaFrame.m_latitude.toDouble(), ggaFrame.m_longitude.toDouble());
   lcdModule.updateDistance(gpsFramework.m_distance);
   lcdModule.updateTime(ggaFrame.m_time);
   lcdModule.updateVitesse(gpsFramework.m_vitesse);

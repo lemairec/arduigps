@@ -4,7 +4,7 @@
 #define GPS
 //#define ENABLE_TEST
 
-//#define JUST_LOG_GPS_FRAME
+#define JUST_LOG_GPS_FRAME
 //#define INVERSE_LEFT_RIGHT
 
 
