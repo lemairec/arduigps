@@ -1,7 +1,6 @@
 #ifndef GPS_H
 #define GPS_H
 #include "logging.h"
-#include "angle.h"
 
 class AngleGps{
 public:
