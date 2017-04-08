@@ -16,12 +16,14 @@
 //#define GPS_DEBUG
 
 AngleGps::AngleGps()
-:m_part0(0), m_part1(0){
+  :m_part0(0), m_part1(0)
+{
 };
-  AngleGps::AngleGps(int part0, int part1)
-  :m_part0(part0), m_part1(part1){
-    
-  }
+
+AngleGps::AngleGps(long part0, long part1)
+  :m_part0(part0), m_part1(part1)
+{
+}
 
 double AngleGps::toDouble(){
   int h = m_part0/100;

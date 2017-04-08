@@ -9,7 +9,7 @@ public:
   long m_part1;
 
   AngleGps();
-  AngleGps(int part0, int part1);
+  AngleGps(long part0, long part1);
 
   AngleGps operator - (const AngleGps&);
   double toDouble();
